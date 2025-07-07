@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Rohis Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 500px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .islamic-pattern {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.05;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g fill-rule="evenodd"><g fill="%2316a34a"><path opacity=".5" d="M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z"/></g></g></svg>');
+        }
+        #toast-container {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .toast {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
+        }
+        .toast.success { background-color: #10B981; }
+        .toast.error { background-color: #EF4444; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 relative">
+    <div class="islamic-pattern"></div>
+    <div id="app" class="relative z-10 min-h-screen flex flex-col"></div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-emerald-700">Login</h2>
+                <button id="close-login-modal" class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+            </div>
+            <p id="login-error" class="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center hidden"></p>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block font-medium mb-1">Username</label>
+                    <input type="text" name="username" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" required />
+                </div>
+                <div>
+                    <label class="block font-medium mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" required />
+                        <button type="button" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500" onclick="togglePassword(this)">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-75 transition-all duration-300 transform hover:scale-105">
+                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                    Masuk
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Generic Modal for Forms -->
+    <div id="form-modal" class="modal">
+        <div id="form-modal-content" class="modal-content">
+            <!-- Content will be injected by JS -->
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+
+    <script>
+        // --- DATA (Simulating a database) ---
+        const data = {
+            users: [
+                { id: 'admin01', username: 'admin', password: '1234', role: 'admin', name: 'Admin Utama', photo: 'https://placehold.co/400x600/16a34a/FFFFFF?text=A', jabatan: 'Administrator', kontak: '0800-0000-0000' },
+                { id: 'pembina01', username: 'pembina', password: 'password123', role: 'pembina', name: 'Bpk. H. Abdullah', photo: 'https://placehold.co/400x600/16a34a/FFFFFF?text=P', jabatan: 'Pembina Utama', kontak: '0811-2233-4455' },
+                { id: 'pengurus01', username: 'pengurus', password: 'password123', role: 'pengurus', name: 'Ahmad Zaki', photo: 'https://placehold.co/400x600/16a34a/FFFFFF?text=AZ', jabatan: 'Ketua Umum', kontak: '0812-3456-7890' },
+                { id: 'pengurus02', username: 'sekretaris', password: 'password123', role: 'pengurus', name: 'Fatima Az-Zahra', photo: 'https://placehold.co/400x600/15803d/FFFFFF?text=FZ', jabatan: 'Sekretaris Jenderal', kontak: '0813-4567-8901'},
+            ],
+            announcements: [
+                { id: 1, title: 'Kajian Rutin Pekanan', content: 'Assalamu\'alaikum Wr. Wb. Diberitahukan kepada seluruh anggota Rohis, kajian rutin akan dilaksanakan pada hari Jumat pukul 16.00 di Musholla Sekolah. Kehadiran sangat diharapkan.', date: '2025-07-01', audience: 'public' },
+            ],
+            participants: [
+                { id: 'p1', name: 'Siti Aisyah', wa: '081234567890', kelas: 'X-1', tujuan: 'Ingin memperdalam ilmu agama dan mencari teman shalihah.', status: 'promoted' },
+                { id: 'p2', name: 'Budi Santoso', wa: '082345678901', kelas: 'XI-IPA-2', tujuan: 'Tertarik dengan program-program Rohis dan ingin aktif berorganisasi.', status: 'validated' },
+                { id: 'p3', name: 'Dewi Lestari', wa: '081212345678', kelas: 'X-2', tujuan: 'Mencari pengalaman organisasi dan belajar agama.', status: 'pending' },
+                { id: 'p4', name: 'Rizky Pratama', wa: '087890123456', kelas: 'XII-IPS-1', tujuan: 'Mengisi waktu luang dengan kegiatan positif.', status: 'rejected' },
+            ],
+            pengurus: [
+                { id: 'pg1', name: 'Ahmad Zaki', jabatan: 'Ketua Umum', photo: 'https://placehold.co/400x600/16a34a/FFFFFF?text=AZ', kontak: '0812-3456-7890' },
+                { id: 'pg2', name: 'Fatima Az-Zahra', jabatan: 'Sekretaris Jenderal', photo: 'https://placehold.co/400x600/15803d/FFFFFF?text=FZ', kontak: '0813-4567-8901' },
+                { id: 'pg3', name: 'Siti Aisyah', jabatan: 'Bendahara', photo: 'https://placehold.co/400x600/16a34a/FFFFFF?text=S', kontak: '081234567890' },
+            ],
+            visiMisi: {
+                visi: 'Menjadi wadah bagi siswa-siswi muslim untuk memperdalam ilmu agama, membentuk akhlak mulia, dan berkontribusi aktif dalam syiar Islam di lingkungan sekolah.',
+                misi: '1. Menyelenggarakan kajian dan kegiatan keislaman secara rutin.\n2. Membina anggota agar memiliki pemahaman Islam yang komprehensif.\n3. Menjalin ukhuwah Islamiyah antar anggota dan seluruh warga sekolah.\n4. Menjadi pelopor dalam kegiatan sosial dan keagamaan di sekolah.',
+            },
+            requests: [
+                { id: 'r1', title: 'Proposal Kegiatan MABIT 2025', from: 'Ahmad Zaki', status: 'pending', fileUrl: 'https://example.com/proposal.pdf' },
+                { id: 'r2', title: 'Pengajuan Dana untuk Bakti Sosial', from: 'Fatima Az-Zahra', status: 'approved', fileUrl: 'https://example.com/dana.xlsx' },
+            ],
+            gallery: [
+                { id: 'g1', src: 'https://placehold.co/600x400/16a34a/ffffff?text=Mabit+2025', title: 'Malam Bina Iman & Taqwa', date: '2025-06-15', link: '#' },
+            ],
+            schedule: [
+                { id: 's1', day: 'Jumat', time: '16:00 - 17:30', topic: 'Tafsir Surat Al-Kahfi', speaker: 'Ustadz Ahmad' },
+            ],
+            finance: {
+                transactions: [
+                    { id: 'f1', date: '2025-07-01', description: 'Kas Pekanan Anggota', type: 'income', amount: 150000 },
+                ]
+            },
+            activities: [
+                { id: 'act1', title: 'Kajian Pekanan Juli', date: '2025-07-04', status: 'open' },
+                { id: 'act2', title: 'Rapat MABIT', date: '2025-06-28', status: 'closed' },
+            ],
+            attendance: [
+                { id: 'att1', activityId: 'act2', userId: 'pengurus01', status: 'hadir', timestamp: '2025-06-28T16:05:00Z' },
+                { id: 'att2', activityId: 'act1', participantId: 'p2', status: 'hadir', timestamp: '2025-07-04T16:10:00Z' },
+            ],
+            materials: [
+                { id: 'mat1', title: 'Materi Fiqih Thaharah', description: 'PPT Kajian Fiqih dasar tentang bersuci.', fileUrl: 'https://example.com/thaharah.ppt', uploader: 'Admin Utama', date: '2025-07-01' },
+                { id: 'mat2', title: 'Manajemen Waktu Islami', description: 'PDF ringkasan dari kajian rutin.', fileUrl: 'https://example.com/manajemen-waktu.pdf', uploader: 'Admin Utama', date: '2025-06-24' },
+            ],
+            proker: [
+                { id: 'prok1', title: 'Malam Bina Iman & Taqwa (MABIT) 2025', description: 'Kegiatan tahunan untuk meningkatkan keimanan dan ketaqwaan anggota baru.', pic: 'Ahmad Zaki', startDate: '2025-08-15', endDate: '2025-08-16', status: 'Perencanaan' },
+                { id: 'prok2', title: 'Bakti Sosial & Santunan Anak Yatim', description: 'Menggalang dana dan menyalurkan bantuan kepada panti asuhan sekitar sekolah.', pic: 'Fatima Az-Zahra', startDate: '2025-09-01', endDate: '2025-09-30', status: 'Selesai' },
+            ],
+            notulensi: [
+                { id: 'not1', title: 'Rapat Perdana MABIT 2025', date: '2025-07-05', prokerId: 'prok1', content: 'Pembentukan panitia inti dan pembahasan konsep acara.' },
+                { id: 'not2', title: 'Evaluasi Bakti Sosial', date: '2025-10-02', prokerId: 'prok2', content: 'Laporan pertanggungjawaban dana dan evaluasi pelaksanaan kegiatan.' },
+            ],
+            isRegistrationOpen: true,
+        };
+
+        // --- STATE ---
+        let state = {
+            currentPage: 'home',
+            currentUser: null,
+            adminView: 'participants',
+            notificationPermission: Notification.permission,
+        };
+
+        // --- DOM ELEMENTS ---
+        const app = document.getElementById('app');
+        const loginModal = document.getElementById('login-modal');
+        const loginForm = document.getElementById('login-form');
+        const closeLoginModalBtn = document.getElementById('close-login-modal');
+        const loginError = document.getElementById('login-error');
+        const formModal = document.getElementById('form-modal');
+        const formModalContent = document.getElementById('form-modal-content');
+        const toastContainer = document.getElementById('toast-container');
+
+        // --- RENDER FUNCTIONS (DEFINED BEFORE USE) ---
+        
+        function renderHeader() {
+            const user = state.currentUser;
+            return `
+                <header class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+                    <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+                        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                            <i data-lucide="book-open" class="text-emerald-600 w-8 h-8"></i>
+                            <h1 class="text-2xl font-bold text-emerald-700">Rohis Digital</h1>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            ${state.notificationPermission !== 'granted' ? `
+                                <button onclick="handleRequestNotificationPermission()" title="Aktifkan Notifikasi" class="text-gray-500 hover:text-emerald-600">
+                                    <i data-lucide="bell"></i>
+                                </button>
+                            ` : `
+                                <span title="Notifikasi Aktif" class="text-emerald-500"><i data-lucide="bell-ring"></i></span>
+                            `}
+                            ${user ? `
+                                <div class="flex items-center gap-4">
+                                    <span class="font-semibold hidden sm:block">Selamat datang, ${user.name}</span>
+                                    <button onclick="handleLogout()" class="flex items-center justify-center gap-2 px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                                        Logout
+                                    </button>
+                                </div>
+                            ` : `
+                                <button onclick="openLoginModal()" class="flex items-center justify-center gap-2 px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                                    Login
+                                </button>
+                            `}
+                        </div>
+                    </nav>
+                </header>
+            `;
+        }
+
+        function renderFooter() {
+            return `
+                <footer class="bg-emerald-800 text-white mt-12 py-6">
+                    <div class="container mx-auto px-4 text-center">
+                        <p>&copy; ${new Date().getFullYear()} Rohis Digital. Dikembangkan dengan ❤️ untuk Ukhuwah.</p>
+                    </div>
+                </footer>
+            `;
+        }
+        
+        function renderHomePage() {
+            const publicAnnouncements = data.announcements.filter(a => a.audience === 'public').slice(0, 2);
+            const openActivities = data.activities.filter(a => a.status === 'open');
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <div class="text-center py-16 bg-gradient-to-br from-emerald-50 to-white rounded-xl shadow-inner-lg border border-emerald-100">
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-emerald-700">Selamat Datang di Rohis Digital</h2>
+                        <p class="mt-4 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Pusat informasi, administrasi, dan komunikasi Kerohanian Islam sekolah kita.</p>
+                        ${data.isRegistrationOpen ? `
+                            <div class="mt-8">
+                                <button onclick="navigateTo('registration')" class="text-lg md:text-xl py-3 px-6 md:py-4 md:px-8 flex items-center justify-center gap-2 mx-auto font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                    <i data-lucide="user-plus"></i>
+                                    Pendaftaran Anggota Baru Dibuka!
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Public Attendance Section -->
+                    <div class="mt-12">
+                        <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6 max-w-2xl mx-auto">
+                            <h3 class="text-2xl font-bold text-emerald-700 mb-4 text-center">Absensi Kegiatan Publik</h3>
+                            <form id="public-attendance-form" class="space-y-4">
+                                <div>
+                                    <label for="public-activity-select" class="block font-medium mb-1">Pilih Kegiatan</label>
+                                    <select id="public-activity-select" name="activityId" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                                        <option value="">-- Pilih Sesi Absensi --</option>
+                                        ${openActivities.map(act => `<option value="${act.id}">${act.title} (${act.date})</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="public-member-name" class="block font-medium mb-1">Ketik Nama Lengkap Anda</label>
+                                    <input type="text" id="public-member-name" name="memberName" class="w-full p-3 border border-gray-300 rounded-lg" required placeholder="Contoh: Budi Santoso">
+                                </div>
+                                <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 text-lg font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                    <i data-lucide="user-check" class="w-6 h-6"></i>
+                                    Konfirmasi Kehadiran
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8 mt-12">
+                        <div class="md:col-span-2 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6">
+                            <h3 class="text-2xl font-bold text-emerald-700 mb-4">Pengumuman Terbaru</h3>
+                            <div class="space-y-4">
+                                ${publicAnnouncements.map(ann => `
+                                    <div class="border-l-4 border-emerald-500 pl-4">
+                                        <h4 class="font-bold">${ann.title}</h4>
+                                        <p class="text-sm text-gray-600">${ann.content}</p>
+                                        <p class="text-xs text-gray-400 mt-1">${ann.date}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6">
+                            <h3 class="text-2xl font-bold text-emerald-700 mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-6 h-6"></i> Jadwal Kajian</h3>
+                            <div class="space-y-3">
+                                ${data.schedule.map(s => `
+                                    <div class="p-3 bg-emerald-50 rounded-lg">
+                                        <p class="font-bold text-emerald-800">${s.topic}</p>
+                                        <p class="text-sm text-gray-600">${s.day}, ${s.time}</p>
+                                        <p class="text-sm text-gray-500">Pemateri: ${s.speaker}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <div class="grid md:grid-cols-2 gap-8 mt-8">
+                        <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6 text-center cursor-pointer" onclick="navigateTo('materials')">
+                            <i data-lucide="book-down" class="mx-auto text-emerald-600 mb-4 w-12 h-12"></i>
+                            <h3 class="text-2xl font-bold text-emerald-700 mb-2">Materi Kajian</h3>
+                            <p class="text-gray-600">Unduh materi-materi yang telah disampaikan.</p>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6 text-center cursor-pointer" onclick="navigateTo('gallery')">
+                            <i data-lucide="camera" class="mx-auto text-emerald-600 mb-4 w-12 h-12"></i>
+                            <h3 class="text-2xl font-bold text-emerald-700 mb-2">Galeri Kegiatan</h3>
+                            <p class="text-gray-600">Lihat dokumentasi momen berharga.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 text-center">
+                        <h3 class="text-3xl font-bold text-emerald-700 mb-8">Struktur Kepengurusan</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                            ${data.pengurus.map(p => `
+                                <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg text-center p-6">
+                                    <img src="${p.photo}" alt="${p.name}" class="w-32 h-48 object-cover rounded-lg mx-auto mb-4 border-4 border-emerald-500" onerror="this.onerror=null;this.src='https://placehold.co/400x600/16a34a/FFFFFF?text=Foto';">
+                                    <h4 class="font-bold text-lg">${p.name}</h4>
+                                    <p class="text-emerald-600">${p.jabatan}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMaterialsPage() {
+            return `
+                <div class="container mx-auto px-4 py-8">
+                     <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold text-emerald-700 flex items-center gap-3"><i data-lucide="book-down" class="w-8 h-8"></i> Materi Kajian</h2>
+                        <button onclick="navigateTo('home')" class="flex items-center justify-center gap-2 px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                            <i data-lucide="home" class="w-5 h-5"></i>
+                            Kembali ke Beranda
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        ${data.materials.map(m => `
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                                <div>
+                                    <h4 class="font-bold text-lg">${m.title}</h4>
+                                    <p class="text-sm text-gray-600">${m.description}</p>
+                                    <p class="text-xs text-gray-500 mt-1">Diunggah oleh: ${m.uploader} pada ${m.date}</p>
+                                </div>
+                                <a href="${m.fileUrl}" target="_blank" rel="noopener noreferrer" class="mt-3 sm:mt-0 flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                    <i data-lucide="download" class="w-4 h-4"></i> Unduh
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderGalleryPage() {
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-3xl font-bold text-emerald-700 flex items-center gap-3"><i data-lucide="camera" class="w-8 h-8"></i> Galeri Kegiatan Rohis</h2>
+                        <button onclick="navigateTo('home')" class="flex items-center justify-center gap-2 px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                            <i data-lucide="home" class="w-5 h-5"></i>
+                            Kembali ke Beranda
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        ${data.gallery.map(item => `
+                            <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="block group">
+                                <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg overflow-hidden h-full">
+                                    <div class="relative overflow-hidden h-64">
+                                        <img src="${item.src}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/16a34a/ffffff?text=Gambar';">
+                                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                            <div class="text-white">
+                                                <h4 class="font-bold">${item.title}</h4>
+                                                <p class="text-sm">${item.date}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRegistrationPage() {
+            if (!data.isRegistrationOpen) {
+                return `
+                    <div class="container mx-auto px-4 py-8">
+                        <div class="text-center py-20">
+                            <i data-lucide="annoyed" class="mx-auto text-red-500 mb-4 w-16 h-16"></i>
+                            <h2 class="text-3xl font-bold">Mohon Maaf</h2>
+                            <p class="text-xl mt-2">Pendaftaran anggota baru saat ini sedang ditutup.</p>
+                             <button onclick="navigateTo('home')" class="mt-6 flex items-center justify-center gap-2 mx-auto px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                <i data-lucide="home" class="w-5 h-5"></i>
+                                Kembali ke Beranda
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg max-w-2xl mx-auto p-8">
+                        <h2 class="text-3xl font-bold text-center mb-6 text-emerald-700">Formulir Pendaftaran</h2>
+                        <form id="registration-form" class="space-y-4">
+                            <div>
+                                <label class="block font-medium mb-1">Nama Lengkap</label>
+                                <input type="text" name="name" class="w-full p-3 border border-gray-300 rounded-lg" required />
+                            </div>
+                            <div>
+                                <label class="block font-medium mb-1">No. WhatsApp</label>
+                                <input type="tel" name="wa" class="w-full p-3 border border-gray-300 rounded-lg" required />
+                            </div>
+                            <div>
+                                <label class="block font-medium mb-1">Kelas</label>
+                                <input type="text" name="kelas" class="w-full p-3 border border-gray-300 rounded-lg" required placeholder="Contoh: X-1, XI-IPA-2" />
+                            </div>
+                            <div>
+                                <label class="block font-medium mb-1">Tujuan & Motivasi</label>
+                                <textarea name="tujuan" rows="4" class="w-full p-3 border border-gray-300 rounded-lg" required></textarea>
+                            </div>
+                            <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 text-lg font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                <i data-lucide="user-plus" class="w-6 h-6"></i>
+                                Daftar Sekarang
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderPengurusDashboard() {
+            const user = state.currentUser;
+            const openActivities = data.activities.filter(a => a.status === 'open');
+            const myRequests = data.requests.filter(r => r.from === user.name);
+
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <h2 class="text-3xl font-bold mb-6">Halaman Pengurus</h2>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                             <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6 text-center">
+                                <img src="${user.photo}" alt="${user.name}" class="w-40 h-60 object-cover rounded-lg mx-auto mb-4 border-4 border-emerald-500" onerror="this.onerror=null;this.src='https://placehold.co/400x600/16a34a/FFFFFF?text=Foto';">
+                                <h3 class="text-2xl font-bold">${user.name}</h3>
+                                <p class="text-emerald-600 font-semibold text-lg">${user.jabatan}</p>
+                                <div class="flex items-center justify-center gap-2 mt-2 text-gray-500">
+                                    <i data-lucide="phone" class="w-4 h-4"></i>
+                                    <span>${user.kontak}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 space-y-6">
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-bold mb-4">Absensi Kegiatan</h3>
+                                ${openActivities.length > 0 ? openActivities.map(act => {
+                                    const attendanceRecord = data.attendance.find(att => att.activityId === act.id && att.userId === user.id);
+                                    const hasAttended = !!attendanceRecord;
+                                    return `
+                                        <div class="flex justify-between items-center p-3 border rounded-lg">
+                                            <div>
+                                                <p class="font-semibold">${act.title}</p>
+                                                <p class="text-sm text-gray-500">${act.date}</p>
+                                            </div>
+                                            ${!hasAttended ? `
+                                                <button onclick="handleAttendance('${act.id}', true)" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white rounded-lg bg-emerald-600 hover:bg-emerald-700">
+                                                    <i data-lucide="user-check" class="w-4 h-4"></i> Hadir
+                                                </button>
+                                            ` : `
+                                                <span class="px-3 py-1 text-sm font-medium text-green-800 bg-green-200 rounded-full">Anda sudah absen (${attendanceRecord.status})</span>
+                                            `}
+                                        </div>
+                                    `
+                                }).join('') : '<p class="text-gray-500">Tidak ada sesi absensi yang sedang dibuka.</p>'}
+                            </div>
+                            
+                            <!-- NEW: Proker Management for Pengurus -->
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-xl font-bold">Program Kerja</h3>
+                                    <button onclick="openFormModal('proker')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Buat Proker
+                                    </button>
+                                </div>
+                                <div class="space-y-3 max-h-72 overflow-y-auto pr-2">
+                                    ${data.proker.map(p => {
+                                        const isPic = p.pic === user.name;
+                                        let statusClass = '';
+                                        switch(p.status) {
+                                            case 'Selesai': statusClass = 'bg-green-100 text-green-800'; break;
+                                            case 'Berjalan': statusClass = 'bg-blue-100 text-blue-800'; break;
+                                            case 'Perencanaan': statusClass = 'bg-yellow-100 text-yellow-800'; break;
+                                        }
+                                        return `
+                                        <div class="p-3 border rounded-lg bg-gray-50">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-bold">${p.title}</h4>
+                                                    <p class="text-sm text-gray-500">PIC: ${p.pic}</p>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    ${isPic ? `
+                                                        <select onchange="handleProkerStatusChange('${p.id}', this.value)" class="p-1 border rounded-md text-xs bg-white focus:ring-emerald-500 focus:border-emerald-500">
+                                                            <option value="Perencanaan" ${p.status === 'Perencanaan' ? 'selected' : ''}>Perencanaan</option>
+                                                            <option value="Berjalan" ${p.status === 'Berjalan' ? 'selected' : ''}>Berjalan</option>
+                                                            <option value="Selesai" ${p.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                                        </select>
+                                                        <button onclick="openFormModal('proker', '${p.id}')" class="text-gray-600 hover:text-blue-700" title="Edit"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                                                    ` : `
+                                                        <span class="px-2 py-1 text-xs font-medium rounded-full ${statusClass}">${p.status}</span>
+                                                    `}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        `
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                     <h3 class="text-xl font-bold">Pengajuan Proposal</h3>
+                                     <button onclick="openFormModal('proposal')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Ajukan Proposal
+                                    </button>
+                                </div>
+                                <div class="space-y-3 max-h-60 overflow-y-auto">
+                                    ${myRequests.length > 0 ? myRequests.map(req => `
+                                        <div class="border p-3 rounded-lg bg-gray-50 flex justify-between items-center">
+                                            <div>
+                                                <p class="font-semibold">${req.title}</p>
+                                                <p class="text-sm text-gray-500">Status: <span class="font-medium ${
+                                                    req.status === 'approved' ? 'text-green-600' :
+                                                    req.status === 'pending' ? 'text-yellow-600' : 'text-red-600'
+                                                }">${req.status}</span></p>
+                                            </div>
+                                            ${req.status === 'pending' ? `
+                                            <button onclick="handleDeleteItem('request', '${req.id}')" class="text-red-600 hover:text-red-800" title="Batalkan">
+                                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                            </button>
+                                            ` : ''}
+                                        </div>
+                                    `).join('') : '<p class="text-gray-500">Anda belum mengajukan proposal.</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminDashboard() {
+            let viewContent = '';
+            switch(state.adminView) {
+                case 'participants': viewContent = renderAdminParticipantsView(); break;
+                case 'validate': viewContent = renderAdminValidateView(); break;
+                case 'proker': viewContent = renderAdminProkerView(); break;
+                case 'notulensi': viewContent = renderAdminNotulensiView(); break;
+                case 'announcements': viewContent = renderAdminAnnouncementsView(); break;
+                case 'users': viewContent = renderAdminUsersView(); break;
+                case 'pengurus': viewContent = renderAdminPengurusView(); break;
+                case 'gallery': viewContent = renderAdminGalleryView(); break;
+                case 'visimisi': viewContent = renderAdminVisiMisiView(); break;
+                case 'finance': viewContent = renderAdminFinanceView(); break;
+                case 'attendance': viewContent = renderAdminAttendanceView(); break;
+                case 'materials': viewContent = renderAdminMaterialsView(); break;
+                case 'settings': viewContent = renderAdminSettingsView(); break;
+                default: viewContent = renderAdminParticipantsView();
+            }
+
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <h2 class="text-3xl font-bold mb-6">Dashboard Admin</h2>
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <aside class="md:w-1/4">
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-4 space-y-2">
+                                ${renderAdminMenuButton('participants', 'users', 'Daftar Anggota')}
+                                ${renderAdminMenuButton('validate', 'user-check', 'Validasi Pendaftar')}
+                                ${renderAdminMenuButton('proker', 'target', 'Program Kerja')}
+                                ${renderAdminMenuButton('notulensi', 'file-text', 'Notulensi Rapat')}
+                                ${renderAdminMenuButton('attendance', 'check-square', 'Absensi Kegiatan')}
+                                ${renderAdminMenuButton('materials', 'book-down', 'Materi Kajian')}
+                                ${renderAdminMenuButton('announcements', 'megaphone', 'Pengumuman')}
+                                ${renderAdminMenuButton('users', 'shield', 'Akun Pengurus')}
+                                ${renderAdminMenuButton('pengurus', 'crown', 'Struktur Pengurus')}
+                                ${renderAdminMenuButton('gallery', 'camera', 'Galeri')}
+                                ${renderAdminMenuButton('visimisi', 'book-open', 'Visi Misi')}
+                                ${renderAdminMenuButton('finance', 'dollar-sign', 'Keuangan')}
+                                ${renderAdminMenuButton('settings', 'settings', 'Pengaturan')}
+                            </div>
+                        </aside>
+                        <main class="flex-1">
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6">
+                                ${viewContent}
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminMenuButton(viewName, icon, text) {
+            const isActive = state.adminView === viewName;
+            return `
+                <button onclick="setAdminView('${viewName}')" class="w-full flex items-center gap-3 p-3 rounded-lg text-left transition ${isActive ? 'bg-emerald-600 text-white shadow' : 'hover:bg-emerald-100'}">
+                    <i data-lucide="${icon}" class="w-5 h-5"></i>
+                    <span>${text}</span>
+                </button>
+            `;
+        }
+
+        function renderAdminParticipantsView() {
+            const pendingParticipants = data.participants.filter(p => p.status === 'pending');
+            const validatedParticipants = data.participants.filter(p => p.status === 'validated');
+            const rejectedParticipants = data.participants.filter(p => p.status === 'rejected');
+            const promotedParticipants = data.participants.filter(p => p.status === 'promoted');
+
+            return `
+                <h3 class="text-xl font-bold mb-4">Daftar Anggota Rohis</h3>
+                <div class="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-yellow-100 p-4 rounded-lg text-center">
+                        <p class="font-semibold text-yellow-800">Menunggu</p>
+                        <p class="text-3xl font-bold text-yellow-900">${pendingParticipants.length}</p>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-lg text-center">
+                        <p class="font-semibold text-green-800">Anggota Aktif</p>
+                        <p class="text-3xl font-bold text-green-900">${validatedParticipants.length}</p>
+                    </div>
+                    <div class="bg-purple-100 p-4 rounded-lg text-center">
+                        <p class="font-semibold text-purple-800">Jadi Pengurus</p>
+                        <p class="text-3xl font-bold text-purple-900">${promotedParticipants.length}</p>
+                    </div>
+                    <div class="bg-red-100 p-4 rounded-lg text-center">
+                        <p class="font-semibold text-red-800">Ditolak</p>
+                        <p class="text-3xl font-bold text-red-900">${rejectedParticipants.length}</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                       <thead class="bg-gray-100"><tr>
+                            <th class="p-2 text-left">Nama</th>
+                            <th class="p-2 text-left">Kelas</th>
+                            <th class="p-2 text-left hidden md:table-cell">WA</th>
+                            <th class="p-2 text-left">Status</th>
+                            <th class="p-2 text-left">Aksi</th>
+                       </tr></thead>
+                       <tbody>
+                        ${data.participants.map(p => {
+                            let statusClass = '';
+                            switch(p.status) {
+                                case 'validated': statusClass = 'bg-green-200 text-green-800'; break;
+                                case 'pending': statusClass = 'bg-yellow-200 text-yellow-800'; break;
+                                case 'rejected': statusClass = 'bg-red-200 text-red-800'; break;
+                                case 'promoted': statusClass = 'bg-purple-200 text-purple-800'; break;
+                                default: statusClass = 'bg-gray-200 text-gray-800';
+                            }
+                            return `
+                            <tr class="border-b">
+                                <td class="p-2 font-medium">${p.name}</td>
+                                <td class="p-2">${p.kelas}</td>
+                                <td class="p-2 hidden md:table-cell">${p.wa}</td>
+                                <td class="p-2"><span class="px-2 py-1 text-xs rounded-full ${statusClass}">${p.status}</span></td>
+                                <td class="p-2 flex gap-2 items-center">
+                                    <button onclick="showParticipantDetails('${p.id}')" class="text-gray-600 hover:text-blue-800" title="Lihat Detail"><i data-lucide="info" class="w-5 h-5"></i></button>
+                                    ${p.status === 'validated' ? `
+                                        <button onclick="openFormModal('promote_to_pengurus', '${p.id}')" class="text-purple-600 hover:text-purple-800" title="Jadikan Pengurus"><i data-lucide="crown" class="w-5 h-5"></i></button>
+                                    ` : ''}
+                                    <button onclick="handleDeleteItem('participant', '${p.id}')" class="text-gray-600 hover:text-gray-800" title="Hapus Permanen"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                </td>
+                            </tr>
+                        `}).join('')}
+                       </tbody>
+                    </table>
+                </div>
+            `;
+        }
+        
+        function renderAdminValidateView() {
+            const pendingParticipants = data.participants.filter(p => p.status === 'pending');
+            return `
+                <h3 class="text-xl font-bold mb-4">Validasi Pendaftar Baru</h3>
+                 ${pendingParticipants.length === 0 ? `
+                    <div class="text-center py-10">
+                        <i data-lucide="check-check" class="w-16 h-16 mx-auto text-green-500"></i>
+                        <p class="text-gray-500 mt-4">Tidak ada pendaftar baru yang perlu divalidasi.</p>
+                    </div>
+                 ` : `
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                           <thead class="bg-gray-100"><tr>
+                                <th class="p-2 text-left">Nama</th><th class="p-2 text-left">Kelas</th><th class="p-2 text-left hidden md:table-cell">WA</th><th class="p-2 text-left">Aksi</th>
+                           </tr></thead>
+                           <tbody>
+                            ${pendingParticipants.map(p => `
+                                <tr class="border-b">
+                                    <td class="p-2 font-medium">${p.name}</td><td class="p-2">${p.kelas}</td><td class="p-2 hidden md:table-cell">${p.wa}</td>
+                                    <td class="p-2 flex gap-2">
+                                        <button onclick="handleParticipantStatus('${p.id}', 'validated')" class="text-green-600 hover:text-green-800" title="Validasi"><i data-lucide="check-circle" class="w-5 h-5"></i></button>
+                                        <button onclick="handleParticipantStatus('${p.id}', 'rejected')" class="text-red-600 hover:text-red-800" title="Tolak"><i data-lucide="x-circle" class="w-5 h-5"></i></button>
+                                        <button onclick="showParticipantDetails('${p.id}')" class="text-gray-600 hover:text-blue-800" title="Lihat Detail"><i data-lucide="info" class="w-5 h-5"></i></button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                           </tbody>
+                        </table>
+                    </div>
+                 `}
+            `;
+        }
+        
+        function renderAdminAnnouncementsView() {
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Manajemen Pengumuman</h3>
+                    <button onclick="openFormModal('announcement')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Buat Baru
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    ${data.announcements.map(a => `
+                        <div class="flex justify-between items-center p-3 border rounded-lg bg-gray-50">
+                            <div>
+                                <p class="font-semibold">${a.title}</p>
+                                <p class="text-xs text-gray-500">Target: ${a.audience}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openFormModal('announcement', '${a.id}')" class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit" class="w-5 h-5"></i></button>
+                                <button onclick="handleDeleteItem('announcement', '${a.id}')" class="text-red-600 hover:text-red-800" title="Hapus"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderAdminUsersView() {
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Manajemen Akun Pengurus</h3>
+                    <button onclick="openFormModal('user')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Akun
+                    </button>
+                </div>
+                 <div class="overflow-x-auto">
+                    <table class="w-full">
+                       <thead class="bg-gray-100"><tr>
+                            <th class="p-2 text-left">Nama</th><th class="p-2 text-left">Username</th><th class="p-2 text-left">Role</th><th class="p-2 text-left">Aksi</th>
+                       </tr></thead>
+                       <tbody>
+                        ${data.users.filter(u => u.role !== 'admin').map(u => `
+                            <tr class="border-b">
+                                <td class="p-2">${u.name}</td><td class="p-2">${u.username}</td><td class="p-2">${u.role}</td>
+                                <td class="p-2 flex gap-2">
+                                    <button onclick="openFormModal('user', '${u.id}')" class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit" class="w-5 h-5"></i></button>
+                                    <button onclick="handleDeleteItem('user', '${u.id}')" class="text-red-600 hover:text-red-800" title="Hapus"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                       </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderAdminPengurusView() {
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Manajemen Struktur Pengurus</h3>
+                    <button onclick="openFormModal('pengurus')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Pengurus
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    ${data.pengurus.map(p => `
+                        <div class="flex justify-between items-center p-2 border rounded-lg bg-gray-50">
+                             <div class="flex items-center gap-3">
+                                <img src="${p.photo}" alt="${p.name}" class="w-12 h-18 object-cover rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/400x600/16a34a/FFFFFF?text=?';">
+                                <div>
+                                    <p class="font-bold">${p.name}</p>
+                                    <p class="text-sm text-gray-600">${p.jabatan}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openFormModal('pengurus', '${p.id}')" class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit" class="w-5 h-5"></i></button>
+                                <button onclick="handleDeleteItem('pengurus', '${p.id}')" class="text-red-600 hover:text-red-800" title="Hapus"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderAdminGalleryView() {
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Manajemen Galeri</h3>
+                    <button onclick="openFormModal('gallery')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Foto
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    ${data.gallery.map(g => `
+                        <div class="border rounded-lg p-2 bg-gray-50 relative">
+                            <img src="${g.src}" alt="${g.title}" class="w-full h-24 object-cover rounded-md mb-2" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Error';">
+                            <p class="font-semibold text-sm truncate">${g.title}</p>
+                            <div class="absolute top-1 right-1 flex gap-1 bg-white/50 rounded-full p-1">
+                                <button onclick="openFormModal('gallery', '${g.id}')" class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                                <button onclick="handleDeleteItem('gallery', '${g.id}')" class="text-red-600 hover:text-red-800" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderAdminVisiMisiView() {
+            return `
+                <h3 class="text-xl font-bold mb-4">Manajemen Visi & Misi</h3>
+                <form id="visimisi-form">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="font-bold block mb-1">Visi</label>
+                            <textarea name="visi" rows="3" class="w-full p-2 border rounded mt-1">${data.visiMisi.visi}</textarea>
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-1">Misi</label>
+                            <textarea name="misi" rows="5" class="w-full p-2 border rounded mt-1">${data.visiMisi.misi}</textarea>
+                        </div>
+                        <button type="submit" class="flex items-center gap-2 px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                           <i data-lucide="save" class="w-5 h-5"></i> Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function renderAdminFinanceView() {
+            const { transactions } = data.finance;
+            const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const balance = totalIncome - totalExpense;
+
+            return `
+                <h3 class="text-xl font-bold mb-4">Manajemen Keuangan Rohis</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
+                    <div class="p-4 bg-green-100 rounded-lg"><h4 class="font-bold text-green-800">Pemasukan</h4><p class="text-2xl font-semibold">Rp ${totalIncome.toLocaleString('id-ID')}</p></div>
+                    <div class="p-4 bg-red-100 rounded-lg"><h4 class="font-bold text-red-800">Pengeluaran</h4><p class="text-2xl font-semibold">Rp ${totalExpense.toLocaleString('id-ID')}</p></div>
+                    <div class="p-4 bg-blue-100 rounded-lg"><h4 class="font-bold text-blue-800">Saldo Akhir</h4><p class="text-2xl font-semibold">Rp ${balance.toLocaleString('id-ID')}</p></div>
+                </div>
+
+                <form id="finance-form" class="mb-6 p-4 border rounded-lg space-y-3 bg-gray-50">
+                    <h4 class="font-bold">Tambah Transaksi Baru</h4>
+                    <input type="text" name="description" placeholder="Deskripsi" class="w-full p-2 border rounded" required/>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <input type="number" name="amount" placeholder="Jumlah (Rp)" class="flex-grow p-2 border rounded" required/>
+                        <select name="type" class="p-2 border rounded">
+                            <option value="income">Pemasukan</option>
+                            <option value="expense">Pengeluaran</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="flex items-center gap-2 px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah
+                    </button>
+                </form>
+
+                <h4 class="font-bold mb-2">Riwayat Transaksi</h4>
+                <div class="overflow-y-auto max-h-64">
+                    <table class="w-full">
+                       <thead class="sticky top-0 bg-gray-100"><tr>
+                            <th class="p-2 text-left">Tanggal</th><th class="p-2 text-left">Deskripsi</th><th class="p-2 text-right">Jumlah</th>
+                       </tr></thead>
+                       <tbody>
+                        ${[...transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).map(t => `
+                            <tr class="border-b">
+                                <td class="p-2">${t.date}</td>
+                                <td class="p-2">${t.description}</td>
+                                <td class="p-2 text-right font-semibold ${t.type === 'income' ? 'text-green-600' : 'text-red-600'}">
+                                    ${t.type === 'income' ? '+' : '-'} Rp ${t.amount.toLocaleString('id-ID')}
+                                </td>
+                            </tr>
+                        `).join('')}
+                       </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderAdminSettingsView() {
+            return `
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">Pengaturan Pendaftaran</h3>
+                        <div class="flex items-center gap-4 p-4 border rounded-lg bg-gray-50">
+                            <span>Status Pendaftaran: <strong class="${data.isRegistrationOpen ? 'text-green-600' : 'text-red-600'}">${data.isRegistrationOpen ? 'Dibuka' : 'Ditutup'}</strong></span>
+                            <button onclick="handleToggleRegistration()" class="flex items-center gap-2 px-4 py-2 font-semibold text-white ${data.isRegistrationOpen ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} rounded-lg shadow-md">
+                                ${data.isRegistrationOpen ? 'Tutup Sekarang' : 'Buka Sekarang'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminAttendanceView() {
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Manajemen Absensi Kegiatan</h3>
+                    <button onclick="openFormModal('activity')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Buat Sesi Baru
+                    </button>
+                </div>
+                <div class="space-y-6">
+                ${data.activities.map(act => {
+                    const allMembers = [
+                        ...data.users.filter(u => u.role === 'pengurus'),
+                        ...data.participants.filter(p => ['validated', 'promoted'].includes(p.status))
+                    ];
+                    
+                    const uniqueMembers = allMembers.filter((member, index, self) => 
+                        index === self.findIndex((m) => m.name === member.name)
+                    );
+
+                    const attendanceSummary = { hadir: 0, izin: 0, sakit: 0, alpa: 0 };
+                    
+                    const attendanceList = uniqueMembers.map(member => {
+                        const isPengurus = !!member.username;
+                        const memberId = member.id;
+                        const idField = isPengurus ? 'userId' : 'participantId';
+
+                        const attendanceRecord = data.attendance.find(a => a.activityId === act.id && a[idField] === memberId);
+                        const status = attendanceRecord ? attendanceRecord.status : 'alpa';
+                        attendanceSummary[status]++;
+                        return { member, status, isPengurus };
+                    });
+
+                    return `
+                        <div class="p-4 border rounded-lg bg-gray-50">
+                            <div class="flex flex-wrap justify-between items-center gap-2">
+                                <div>
+                                    <h4 class="font-bold text-lg">${act.title}</h4>
+                                    <p class="text-sm text-gray-500">${act.date}</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-1 text-xs rounded-full ${act.status === 'open' ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}">${act.status}</span>
+                                    <button onclick="handleActivityStatusToggle('${act.id}')" class="text-gray-600 hover:text-blue-700" title="${act.status === 'open' ? 'Tutup Sesi' : 'Buka Sesi'}"><i data-lucide="${act.status === 'open' ? 'lock' : 'unlock'}" class="w-5 h-5"></i></button>
+                                    <button onclick="openFormModal('activity', '${act.id}')" class="text-gray-600 hover:text-blue-700" title="Edit Sesi"><i data-lucide="edit" class="w-5 h-5"></i></button>
+                                    <button onclick="handleDeleteItem('activity', '${act.id}')" class="text-gray-600 hover:text-red-700" title="Hapus Sesi"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                    <button onclick="handleExportExcel('${act.id}')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-green-700 rounded-lg shadow-sm hover:bg-green-800" title="Unduh Laporan Excel"><i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Excel</button>
+                                </div>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-sm">
+                                <div class="p-2 bg-green-100 rounded"><strong>Hadir:</strong> ${attendanceSummary.hadir}</div>
+                                <div class="p-2 bg-yellow-100 rounded"><strong>Izin:</strong> ${attendanceSummary.izin}</div>
+                                <div class="p-2 bg-orange-100 rounded"><strong>Sakit:</strong> ${attendanceSummary.sakit}</div>
+                                <div class="p-2 bg-red-100 rounded"><strong>Alpa:</strong> ${attendanceSummary.alpa}</div>
+                            </div>
+                            <div class="mt-4">
+                                <h5 class="font-semibold text-sm mb-2">Daftar Kehadiran:</h5>
+                                <div class="space-y-2 max-h-60 overflow-y-auto pr-2">
+                                ${attendanceList.map(({ member, status, isPengurus }) => `
+                                    <div class="flex justify-between items-center p-2 border rounded-md bg-white">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-medium">${member.name}</span>
+                                            <span class="text-xs px-1.5 py-0.5 rounded ${member.jabatan && member.jabatan !== 'Anggota' ? 'bg-purple-200 text-purple-800' : 'bg-gray-200 text-gray-800'}">${member.jabatan || 'Anggota'}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <select onchange="handleAdminSetAttendanceStatus('${act.id}', '${member.id}', this.value, ${isPengurus})" class="p-1 border rounded-md text-xs">
+                                                <option value="hadir" ${status === 'hadir' ? 'selected' : ''}>Hadir</option>
+                                                <option value="izin" ${status === 'izin' ? 'selected' : ''}>Izin</option>
+                                                <option value="sakit" ${status === 'sakit' ? 'selected' : ''}>Sakit</option>
+                                                <option value="alpa" ${status === 'alpa' ? 'selected' : ''}>Alpa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `
+                }).join('')}
+                </div>
+            `;
+        }
+        
+        function renderAdminMaterialsView() {
+             return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Manajemen Materi Kajian</h3>
+                    <button onclick="openFormModal('material')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Materi
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    ${data.materials.map(m => `
+                        <div class="flex justify-between items-center p-3 border rounded-lg bg-gray-50">
+                            <div>
+                                <p class="font-semibold">${m.title}</p>
+                                <p class="text-xs text-gray-500">${m.description}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openFormModal('material', '${m.id}')" class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit" class="w-5 h-5"></i></button>
+                                <button onclick="handleDeleteItem('material', '${m.id}')" class="text-red-600 hover:text-red-800" title="Hapus"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderAdminProkerView() {
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Manajemen Program Kerja</h3>
+                    <button onclick="openFormModal('proker')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Buat Proker Baru
+                    </button>
+                </div>
+                <div class="space-y-4">
+                ${data.proker.map(p => {
+                    let statusClass = '';
+                    switch(p.status) {
+                        case 'Selesai': statusClass = 'bg-green-200 text-green-800'; break;
+                        case 'Berjalan': statusClass = 'bg-blue-200 text-blue-800'; break;
+                        case 'Perencanaan': statusClass = 'bg-yellow-200 text-yellow-800'; break;
+                    }
+                    return `
+                    <div class="p-4 border rounded-lg bg-gray-50">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-lg">${p.title}</h4>
+                                <p class="text-sm text-gray-500">PIC: ${p.pic}</p>
+                                <p class="text-sm text-gray-500">Linimasa: ${p.startDate} s/d ${p.endDate}</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full ${statusClass}">${p.status}</span>
+                                <button onclick="openFormModal('proker', '${p.id}')" class="text-gray-600 hover:text-blue-700" title="Edit"><i data-lucide="edit" class="w-5 h-5"></i></button>
+                                <button onclick="handleDeleteItem('proker', '${p.id}')" class="text-gray-600 hover:text-red-700" title="Hapus"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-700">${p.description}</p>
+                    </div>
+                    `
+                }).join('')}
+                </div>
+            `;
+        }
+
+        function renderAdminNotulensiView() {
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Arsip Notulensi Rapat</h3>
+                    <button onclick="openFormModal('notulensi')" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg shadow-md hover:bg-emerald-700">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Buat Notulensi Baru
+                    </button>
+                </div>
+                <div class="space-y-3">
+                ${data.notulensi.map(n => {
+                    const linkedProker = data.proker.find(p => p.id === n.prokerId);
+                    return `
+                    <div class="p-4 border rounded-lg bg-gray-50">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-lg">${n.title}</h4>
+                                <p class="text-sm text-gray-500">Tanggal: ${n.date}</p>
+                                ${linkedProker ? `<p class="text-xs text-blue-600 font-medium">Terkait Proker: ${linkedProker.title}</p>` : ''}
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openFormModal('notulensi', '${n.id}')" class="text-gray-600 hover:text-blue-700" title="Lihat/Edit"><i data-lucide="edit" class="w-5 h-5"></i></button>
+                                <button onclick="handleDeleteItem('notulensi', '${n.id}')" class="text-gray-600 hover:text-red-700" title="Hapus"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-700 whitespace-pre-wrap">${n.content}</div>
+                    </div>
+                    `
+                }).join('')}
+                </div>
+            `;
+        }
+
+        function renderPembinaDashboard() {
+            const user = state.currentUser;
+            return `
+                <div class="container mx-auto px-4 py-8">
+                    <h2 class="text-3xl font-bold mb-6">Dashboard Pembina</h2>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6 text-center">
+                                <img src="${user.photo}" alt="${user.name}" class="w-40 h-60 object-cover rounded-lg mx-auto mb-4 border-4 border-emerald-500" onerror="this.onerror=null;this.src='https://placehold.co/400x600/16a34a/FFFFFF?text=Foto';">
+                                <h3 class="text-2xl font-bold">${user.name}</h3>
+                                <p class="text-emerald-600 font-semibold text-lg">${user.jabatan}</p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2 space-y-8">
+                            <div class="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-bold mb-4">Permintaan & Proposal Masuk</h3>
+                                <div class="space-y-3">
+                                    ${data.requests.map(req => `
+                                        <div class="border p-3 rounded-lg">
+                                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                                                <div class="mb-2 sm:mb-0">
+                                                    <p class="font-semibold">${req.title}</p>
+                                                    <p class="text-sm text-gray-500">Dari: ${req.from}</p>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="px-2 py-1 text-xs rounded-full ${req.status === 'approved' ? 'bg-green-200 text-green-800' : req.status === 'pending' ? 'bg-yellow-200 text-yellow-800' : 'bg-red-200 text-red-800'}">${req.status}</span>
+                                                    ${req.status === 'pending' ? `
+                                                        <button onclick="handleRequestStatus('${req.id}', 'approved')" class="text-green-600 hover:text-green-800" title="Setujui"><i data-lucide="check-circle" class="w-5 h-5"></i></button>
+                                                        <button onclick="handleRequestStatus('${req.id}', 'rejected')" class="text-red-600 hover:text-red-800" title="Tolak"><i data-lucide="x-circle" class="w-5 h-5"></i></button>
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                            ${req.fileUrl ? `
+                                                <div class="mt-2 pt-2 border-t">
+                                                    <a href="${req.fileUrl}" target="_blank" rel="noopener noreferrer" class="text-sm text-emerald-600 hover:underline flex items-center gap-1">
+                                                        <i data-lucide="file-text" class="w-4 h-4"></i> Lihat File Proposal
+                                                    </a>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // --- MAIN RENDER ORCHESTRATOR ---
+        function render() {
+            const header = renderHeader();
+            const footer = renderFooter();
+            let pageContent = '';
+
+            switch (state.currentPage) {
+                case 'home': pageContent = renderHomePage(); break;
+                case 'gallery': pageContent = renderGalleryPage(); break;
+                case 'materials': pageContent = renderMaterialsPage(); break;
+                case 'registration': pageContent = renderRegistrationPage(); break;
+                case 'admin': pageContent = renderAdminDashboard(); break;
+                case 'pembina': pageContent = renderPembinaDashboard(); break;
+                case 'pengurus': pageContent = renderPengurusDashboard(); break;
+                default: pageContent = renderHomePage();
+            }
+
+            app.innerHTML = header + `<main class="flex-grow">${pageContent}</main>` + footer;
+            
+            lucide.createIcons();
+            
+            // Re-attach dynamic form listeners
+            if (state.currentPage === 'home') {
+                document.getElementById('public-attendance-form').addEventListener('submit', handlePublicAttendance);
+            }
+            if (state.currentPage === 'registration' && data.isRegistrationOpen) {
+                document.getElementById('registration-form').addEventListener('submit', handleRegistration);
+            }
+            if (state.currentPage === 'admin') {
+                if(state.adminView === 'finance') {
+                    document.getElementById('finance-form').addEventListener('submit', handleFinanceForm);
+                }
+                if(state.adminView === 'visimisi') {
+                    document.getElementById('visimisi-form').addEventListener('submit', handleVisiMisiSave);
+                }
+            }
+        }
+
+        // --- HANDLERS & LOGIC ---
+        
+        function navigateTo(page) {
+            state.currentPage = page;
+            window.scrollTo(0, 0);
+            render();
+        }
+
+        function setAdminView(view) {
+            state.adminView = view;
+            render();
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = event.target.username.value;
+            const password = event.target.password.value;
+            const foundUser = data.users.find(u => u.username === username && u.password === password);
+
+            if (foundUser) {
+                state.currentUser = foundUser;
+                navigateTo(foundUser.role);
+                closeLoginModal();
+            } else {
+                loginError.textContent = 'Username atau password salah!';
+                loginError.classList.remove('hidden');
+            }
+        }
+        
+        function handleLogout() {
+            state.currentUser = null;
+            navigateTo('home');
+        }
+
+        function handleRegistration(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const newParticipant = {
+                id: `p${Date.now()}`,
+                name: formData.get('name'),
+                wa: formData.get('wa'),
+                kelas: formData.get('kelas'),
+                tujuan: formData.get('tujuan'),
+                status: 'pending'
+            };
+            data.participants.push(newParticipant);
+            showToast('Pendaftaran berhasil! Data akan divalidasi.', 'success');
+            showDummyNotification('Pendaftar Baru', `${newParticipant.name} telah mendaftar sebagai anggota baru.`);
+            navigateTo('home');
+        };
+
+        function handleParticipantStatus(id, status) {
+            const participant = data.participants.find(p => p.id === id);
+            if(participant) {
+                participant.status = status;
+                showToast(`Status ${participant.name} diperbarui menjadi ${status}.`, 'success');
+                render();
+            }
+        }
+
+        function showParticipantDetails(id) {
+            const participant = data.participants.find(p => p.id === id);
+            if (participant) {
+                let statusClass, statusText;
+                switch(participant.status) {
+                    case 'validated': statusClass = 'bg-green-200 text-green-800'; statusText = 'Anggota Aktif'; break;
+                    case 'pending': statusClass = 'bg-yellow-200 text-yellow-800'; statusText = 'Menunggu Validasi'; break;
+                    case 'rejected': statusClass = 'bg-red-200 text-red-800'; statusText = 'Ditolak'; break;
+                    case 'promoted': statusClass = 'bg-purple-200 text-purple-800'; statusText = 'Pengurus'; break;
+                    default: statusClass = 'bg-gray-200 text-gray-800'; statusText = 'Tidak Diketahui';
+                }
+                const detailHTML = `
+                    <h3 class="text-xl font-bold mb-4">Detail Peserta</h3>
+                    <div class="space-y-2 text-gray-700">
+                        <p><strong>Nama:</strong> ${participant.name}</p>
+                        <p><strong>Kelas:</strong> ${participant.kelas}</p>
+                        <p><strong>No. WA:</strong> ${participant.wa}</p>
+                        <p class="border-t pt-2 mt-2"><strong>Tujuan & Motivasi:</strong><br>${participant.tujuan}</p>
+                        <p><strong>Status:</strong> <span class="px-2 py-1 text-xs rounded-full ${statusClass}">${statusText}</span></p>
+                    </div>
+                    <div class="flex justify-end gap-4 mt-6">
+                        <button type="button" onclick="closeFormModal()" class="px-4 py-2 font-semibold bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">Tutup</button>
+                    </div>
+                `;
+                formModalContent.innerHTML = detailHTML;
+                formModal.style.display = 'flex';
+                lucide.createIcons();
+            }
+        }
+
+        function handleRequestStatus(id, status) {
+            const request = data.requests.find(r => r.id === id);
+            if(request) {
+                request.status = status;
+                showToast(`Status proposal "${request.title}" diperbarui.`, 'success');
+                render();
+            }
+        }
+
+        function handleToggleRegistration() {
+            data.isRegistrationOpen = !data.isRegistrationOpen;
+            showToast(`Pendaftaran sekarang ${data.isRegistrationOpen ? 'DIBUKA' : 'DITUTUP'}.`, 'success');
+            setAdminView('settings');
+        }
+
+        function handleFinanceForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const newTransaction = {
+                id: `f${Date.now()}`,
+                date: new Date().toISOString().slice(0,10),
+                description: form.description.value,
+                type: form.type.value,
+                amount: parseFloat(form.amount.value)
+            };
+            if (!newTransaction.description || isNaN(newTransaction.amount) || newTransaction.amount <= 0) {
+                showToast('Harap isi semua field dengan benar.', 'error');
+                return;
+            }
+            data.finance.transactions.push(newTransaction);
+            showToast('Transaksi berhasil ditambahkan.', 'success');
+            setAdminView('finance');
+        }
+
+        function handleVisiMisiSave(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            data.visiMisi.visi = formData.get('visi');
+            data.visiMisi.misi = formData.get('misi');
+            showToast('Visi & Misi berhasil disimpan.', 'success');
+            render();
+        }
+        
+        function handleDeleteItem(type, id) {
+            const itemMap = {
+                announcement: { data: 'announcements', name: 'Pengumuman' },
+                user: { data: 'users', name: 'Akun' },
+                pengurus: { data: 'pengurus', name: 'Pengurus' },
+                gallery: { data: 'gallery', name: 'Item Galeri' },
+                material: { data: 'materials', name: 'Materi' },
+                request: { data: 'requests', name: 'Proposal' },
+                activity: { data: 'activities', name: 'Sesi Absensi' },
+                participant: { data: 'participants', name: 'Peserta' },
+                proker: { data: 'proker', name: 'Program Kerja' },
+                notulensi: { data: 'notulensi', name: 'Notulensi' },
+            };
+            const itemConfig = itemMap[type];
+            if (!itemConfig) return;
+            
+            if (type === 'activity') {
+                data.attendance = data.attendance.filter(att => att.activityId !== id);
+            }
+            if (type === 'proker') {
+                data.notulensi.forEach(n => {
+                    if (n.prokerId === id) n.prokerId = null;
+                });
+            }
+
+            data[itemConfig.data] = data[itemConfig.data].filter(item => item.id != id);
+            showToast(`${itemConfig.name} berhasil dihapus.`, 'success');
+            render();
+        }
+
+        function handleActivityStatusToggle(activityId) {
+            const activity = data.activities.find(a => a.id === activityId);
+            if (activity) {
+                activity.status = activity.status === 'open' ? 'closed' : 'open';
+                showToast(`Sesi absensi untuk "${activity.title}" telah ${activity.status === 'open' ? 'dibuka' : 'ditutup'}.`, 'success');
+                render();
+            }
+        }
+
+        function handleProkerStatusChange(prokerId, newStatus) {
+            const proker = data.proker.find(p => p.id === prokerId);
+            if (proker) {
+                proker.status = newStatus;
+                showToast(`Status proker "${proker.title}" diubah menjadi ${newStatus}.`, 'success');
+                render();
+            }
+        }
+
+        function handleAttendance(activityId, isPengurus) {
+            const memberId = state.currentUser.id;
+            const idField = isPengurus ? 'userId' : 'participantId';
+            const hasAttended = data.attendance.some(att => att.activityId === activityId && att[idField] === memberId);
+            if (hasAttended) {
+                showToast('Anda sudah melakukan absensi untuk kegiatan ini.', 'error');
+                return;
+            }
+            data.attendance.push({
+                id: `att${Date.now()}`,
+                activityId: activityId,
+                [idField]: memberId,
+                status: 'hadir',
+                timestamp: new Date().toISOString()
+            });
+            showToast('Kehadiran berhasil dicatat!', 'success');
+            render();
+        }
+
+        function handlePublicAttendance(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const activityId = formData.get('activityId');
+            const memberName = formData.get('memberName').trim();
+
+            if (!activityId) {
+                showToast('Silakan pilih kegiatan terlebih dahulu.', 'error');
+                return;
+            }
+            if (!memberName) {
+                showToast('Silakan masukkan nama lengkap Anda.', 'error');
+                return;
+            }
+
+            const member = data.participants.find(p => p.name.toLowerCase() === memberName.toLowerCase() && ['validated', 'promoted'].includes(p.status));
+
+            if (!member) {
+                showToast(`Anggota dengan nama "${memberName}" tidak ditemukan atau belum tervalidasi.`, 'error');
+                return;
+            }
+
+            const hasAttended = data.attendance.some(att => att.activityId === activityId && att.participantId === member.id);
+            if (hasAttended) {
+                showToast('Anda sudah tercatat hadir untuk kegiatan ini.', 'error');
+                return;
+            }
+
+            data.attendance.push({
+                id: `att${Date.now()}`,
+                activityId: activityId,
+                participantId: member.id,
+                status: 'hadir',
+                timestamp: new Date().toISOString()
+            });
+
+            showToast(`Kehadiran untuk ${member.name} berhasil dicatat!`, 'success');
+            event.target.reset();
+        }
+
+        function handleAdminSetAttendanceStatus(activityId, memberId, status, isPengurus) {
+            const idField = isPengurus ? 'userId' : 'participantId';
+            let attendanceRecord = data.attendance.find(a => a.activityId === activityId && a[idField] === memberId);
+
+            if (attendanceRecord) {
+                if (status === 'alpa') {
+                    data.attendance = data.attendance.filter(a => a.id !== attendanceRecord.id);
+                } else {
+                    attendanceRecord.status = status;
+                    attendanceRecord.timestamp = new Date().toISOString();
+                }
+            } else if (status !== 'alpa') {
+                data.attendance.push({
+                    id: `att${Date.now()}`,
+                    activityId,
+                    [idField]: memberId,
+                    status,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            showToast('Status kehadiran berhasil diperbarui.', 'success');
+            setAdminView('attendance');
+        }
+
+        function handleExportExcel(activityId) {
+            const activity = data.activities.find(a => a.id === activityId);
+            if (!activity) return;
+
+            const allMembers = [
+                ...data.users.filter(u => u.role === 'pengurus'),
+                ...data.participants.filter(p => ['validated', 'promoted'].includes(p.status))
+            ];
+            
+            const uniqueMembers = allMembers.filter((member, index, self) => 
+                index === self.findIndex((m) => m.name === member.name)
+            );
+
+            const attendanceList = uniqueMembers.map(member => {
+                const isPengurus = !!member.username;
+                const memberId = member.id;
+                const idField = isPengurus ? 'userId' : 'participantId';
+                const attendanceRecord = data.attendance.find(a => a.activityId === activityId && a[idField] === memberId);
+                const status = attendanceRecord ? attendanceRecord.status.toUpperCase() : 'ALPA';
+                const timestamp = attendanceRecord && attendanceRecord.timestamp ? new Date(attendanceRecord.timestamp).toLocaleString('id-ID') : '-';
+                return {
+                    nama: member.name,
+                    jabatan: member.jabatan || 'Anggota',
+                    status: status,
+                    waktu: timestamp
+                };
+            });
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `Laporan Absensi untuk Kegiatan: ${activity.title}\n`;
+            csvContent += `Tanggal: ${activity.date}\n\n`;
+            csvContent += "No,Nama,Jabatan,Status,Waktu Absen\n";
+
+            attendanceList.forEach((item, index) => {
+                let row = `${index + 1},"${item.nama}","${item.jabatan}","${item.status}","${item.waktu}"`;
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `laporan_absensi_${activity.title.replace(/\s+/g, '_')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Laporan Excel sedang diunduh.', 'success');
+        }
+
+
+        // --- DYNAMIC FORM MODAL ---
+        
+        function openFormModal(type, id = null) {
+            let title = '';
+            let formHTML = '';
+            let itemData = {};
+
+            switch(type) {
+                case 'announcement':
+                    title = id ? 'Edit Pengumuman' : 'Buat Pengumuman Baru';
+                    itemData = id ? data.announcements.find(i => i.id == id) : { title: '', content: '', audience: 'public' };
+                    formHTML = `<input name="title" class="w-full p-2 border rounded" placeholder="Judul" value="${itemData.title || ''}" required>
+                                <textarea name="content" class="w-full p-2 border rounded" placeholder="Isi Pengumuman" rows="4" required>${itemData.content || ''}</textarea>
+                                <select name="audience" class="w-full p-2 border rounded"><option value="public" ${itemData.audience === 'public' ? 'selected' : ''}>Publik</option><option value="pengurus" ${itemData.audience === 'pengurus' ? 'selected' : ''}>Khusus Pengurus</option></select>`;
+                    break;
+                case 'user':
+                    title = id ? 'Edit Akun' : 'Tambah Akun Baru';
+                    itemData = id ? data.users.find(i => i.id == id) : { name: '', username: '', password: '', role: 'pengurus', jabatan: '', kontak: '', photo: '' };
+                    formHTML = `<input name="name" class="w-full p-2 border rounded" placeholder="Nama Lengkap" value="${itemData.name || ''}" required><input name="username" class="w-full p-2 border rounded" placeholder="Username" value="${itemData.username || ''}" required><input name="password" class="w-full p-2 border rounded" placeholder="Password (kosongkan jika tidak diubah)" value=""><select name="role" class="w-full p-2 border rounded"><option value="pengurus" ${itemData.role === 'pengurus' ? 'selected' : ''}>Pengurus</option><option value="pembina" ${itemData.role === 'pembina' ? 'selected' : ''}>Pembina</option></select><input name="jabatan" class="w-full p-2 border rounded" placeholder="Jabatan" value="${itemData.jabatan || ''}"><input name="kontak" class="w-full p-2 border rounded" placeholder="Kontak (No. HP)" value="${itemData.kontak || ''}"><input name="photo" class="w-full p-2 border rounded" placeholder="URL Foto (4x6)" value="${itemData.photo || ''}">`;
+                    break;
+                case 'pengurus':
+                    title = id ? 'Edit Pengurus' : 'Tambah Pengurus Baru';
+                    itemData = id ? data.pengurus.find(i => i.id == id) : { name: '', jabatan: '', kontak: '', photo: '' };
+                    formHTML = `<input name="name" class="w-full p-2 border rounded" placeholder="Nama Lengkap" value="${itemData.name || ''}" required><input name="jabatan" class="w-full p-2 border rounded" placeholder="Jabatan" value="${itemData.jabatan || ''}" required><input name="kontak" class="w-full p-2 border rounded" placeholder="Kontak" value="${itemData.kontak || ''}"><input name="photo" class="w-full p-2 border rounded" placeholder="URL Foto (4x6)" value="${itemData.photo || ''}">`;
+                    break;
+                case 'promote_to_pengurus':
+                    const participantToPromote = data.participants.find(p => p.id === id);
+                    if (!participantToPromote) { showToast('Peserta tidak ditemukan.', 'error'); return; }
+                    title = `Jadikan ${participantToPromote.name} sebagai Pengurus`;
+                    itemData = { name: participantToPromote.name, jabatan: '', kontak: participantToPromote.wa, photo: `https://placehold.co/400x600/16a34a/FFFFFF?text=${participantToPromote.name.charAt(0)}` };
+                    formHTML = `<input name="name" class="w-full p-2 border rounded bg-gray-100" value="${itemData.name}" readonly>
+                                <input name="jabatan" class="w-full p-2 border rounded" placeholder="Jabatan (Contoh: Ketua Divisi)" required>
+                                <input name="kontak" class="w-full p-2 border rounded" placeholder="Kontak" value="${itemData.kontak}">
+                                <input name="photo" class="w-full p-2 border rounded" placeholder="URL Foto (opsional)" value="${itemData.photo}">
+                                <input type="hidden" name="participantId" value="${id}">`;
+                    break;
+                case 'gallery':
+                    title = id ? 'Edit Item Galeri' : 'Tambah Foto Baru';
+                    itemData = id ? data.gallery.find(i => i.id == id) : { title: '', date: '', src: '', link: '' };
+                    formHTML = `<input name="title" class="w-full p-2 border rounded" placeholder="Judul Foto" value="${itemData.title || ''}" required><input type="date" name="date" class="w-full p-2 border rounded" value="${itemData.date || ''}"><input name="src" class="w-full p-2 border rounded" placeholder="URL Gambar" value="${itemData.src || ''}" required><input name="link" class="w-full p-2 border rounded" placeholder="Tautan Eksternal (opsional)" value="${itemData.link || ''}">`;
+                    break;
+                case 'activity':
+                    title = id ? 'Edit Sesi Absensi' : 'Buat Sesi Absensi Baru';
+                    itemData = id ? data.activities.find(i => i.id == id) : { title: '', date: new Date().toISOString().slice(0,10) };
+                    formHTML = `<input name="title" class="w-full p-2 border rounded" placeholder="Nama Kegiatan" value="${itemData.title}" required><input type="date" name="date" class="w-full p-2 border rounded" value="${itemData.date}" required>`;
+                    break;
+                case 'material':
+                    title = id ? 'Edit Materi' : 'Tambah Materi Baru';
+                    itemData = id ? data.materials.find(i => i.id == id) : { title: '', description: '', fileUrl: '' };
+                    formHTML = `<input name="title" class="w-full p-2 border rounded" placeholder="Judul Materi" value="${itemData.title || ''}" required><textarea name="description" class="w-full p-2 border rounded" placeholder="Deskripsi singkat" required>${itemData.description || ''}</textarea><input name="fileUrl" class="w-full p-2 border rounded" placeholder="URL File (e.g., Google Drive, Dropbox)" value="${itemData.fileUrl || ''}" required><p class="text-xs text-gray-500">Simulasi Upload: Masukkan link publik ke file.</p>`;
+                    break;
+                case 'proposal':
+                    title = 'Ajukan Proposal Baru';
+                    itemData = { title: '', fileUrl: '' };
+                    formHTML = `<input name="title" class="w-full p-2 border rounded" placeholder="Judul Proposal" value="" required>
+                                <input name="fileUrl" class="w-full p-2 border rounded" placeholder="URL File Proposal (Google Drive, dll)" value="" required>
+                                <p class="text-xs text-gray-500">Simulasi Upload: Masukkan link publik ke file proposal Anda.</p>`;
+                    break;
+                case 'proker':
+                    title = id ? 'Edit Program Kerja' : 'Buat Program Kerja Baru';
+                    itemData = id ? data.proker.find(p => p.id === id) : { title: '', description: '', pic: '', startDate: '', endDate: '', status: 'Perencanaan' };
+                    const pengurusOptions = data.users.filter(u => u.role === 'pengurus').map(u => `<option value="${u.name}" ${itemData.pic === u.name ? 'selected' : ''}>${u.name}</option>`).join('');
+                    formHTML = `<input name="title" class="w-full p-2 border rounded" placeholder="Nama Program Kerja" value="${itemData.title || ''}" required>
+                                <textarea name="description" class="w-full p-2 border rounded" placeholder="Deskripsi singkat Proker" rows="3" required>${itemData.description || ''}</textarea>
+                                <select name="pic" class="w-full p-2 border rounded" required><option value="">-- Pilih PIC --</option>${pengurusOptions}</select>
+                                <div class="flex gap-4"><input type="date" name="startDate" class="w-full p-2 border rounded" value="${itemData.startDate || ''}" required><input type="date" name="endDate" class="w-full p-2 border rounded" value="${itemData.endDate || ''}" required></div>
+                                <select name="status" class="w-full p-2 border rounded"><option value="Perencanaan" ${itemData.status === 'Perencanaan' ? 'selected' : ''}>Perencanaan</option><option value="Berjalan" ${itemData.status === 'Berjalan' ? 'selected' : ''}>Berjalan</option><option value="Selesai" ${itemData.status === 'Selesai' ? 'selected' : ''}>Selesai</option></select>`;
+                    break;
+                case 'notulensi':
+                    title = id ? 'Edit Notulensi' : 'Buat Notulensi Baru';
+                    itemData = id ? data.notulensi.find(n => n.id === id) : { title: '', date: new Date().toISOString().slice(0,10), prokerId: '', content: '' };
+                    const prokerOptions = data.proker.map(p => `<option value="${p.id}" ${itemData.prokerId === p.id ? 'selected' : ''}>${p.title}</option>`).join('');
+                    formHTML = `<input name="title" class="w-full p-2 border rounded" placeholder="Judul Rapat" value="${itemData.title || ''}" required>
+                                <input type="date" name="date" class="w-full p-2 border rounded" value="${itemData.date}" required>
+                                <select name="prokerId" class="w-full p-2 border rounded"><option value="">-- Tautkan ke Proker (Opsional) --</option>${prokerOptions}</select>
+                                <textarea name="content" class="w-full p-2 border rounded" placeholder="Isi notulensi..." rows="8" required>${itemData.content || ''}</textarea>`;
+                    break;
+            }
+
+            formModalContent.innerHTML = `<h3 class="text-xl font-bold mb-4">${title}</h3><form id="dynamic-form" class="space-y-3">${formHTML}<div class="flex justify-end gap-4 mt-6"><button type="button" onclick="closeFormModal()" class="px-4 py-2 font-semibold bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400">Batal</button><button type="submit" class="px-4 py-2 font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700">Simpan</button></div></form>`;
+
+            document.getElementById('dynamic-form').onsubmit = (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const updatedData = {};
+                for (let [key, value] of formData.entries()) {
+                    if (value || type === 'user') updatedData[key] = value;
+                }
+                
+                const collectionMap = {
+                    user: 'users',
+                    announcement: 'announcements',
+                    pengurus: 'pengurus',
+                    gallery: 'gallery',
+                    activity: 'activities',
+                    material: 'materials',
+                    proposal: 'requests',
+                    promote_to_pengurus: 'pengurus',
+                    proker: 'proker',
+                    notulensi: 'notulensi',
+                };
+                const collectionName = collectionMap[type];
+
+                if (type === 'promote_to_pengurus') {
+                    const participantId = formData.get('participantId');
+                    const participant = data.participants.find(p => p.id === participantId);
+                    if (participant) {
+                        data.pengurus.push({
+                            id: `pg${Date.now()}`,
+                            name: participant.name,
+                            jabatan: updatedData.jabatan,
+                            kontak: updatedData.kontak,
+                            photo: updatedData.photo
+                        });
+                        data.users.push({
+                            id: `usr${Date.now()}`,
+                            username: participant.name.toLowerCase().replace(/\s/g, ''),
+                            password: 'password123',
+                            role: 'pengurus',
+                            name: participant.name,
+                            jabatan: updatedData.jabatan,
+                            kontak: updatedData.kontak,
+                            photo: updatedData.photo
+                        });
+                        participant.status = 'promoted';
+                        showToast(`${participant.name} berhasil dijadikan pengurus!`, 'success');
+                    }
+                } else if (id) {
+                    const itemIndex = data[collectionName].findIndex(i => i.id == id);
+                    if (type === 'user' && !updatedData.password) delete updatedData.password;
+                    data[collectionName][itemIndex] = { ...data[collectionName][itemIndex], ...updatedData };
+                } else {
+                    const newItem = { id: `${type}${Date.now()}`, ...itemData, ...updatedData };
+                    if (type === 'activity') newItem.status = 'open';
+                    if (type === 'material') newItem.uploader = state.currentUser.name;
+                    if (type === 'proposal') {
+                        newItem.from = state.currentUser.name;
+                        newItem.status = 'pending';
+                    }
+                    data[collectionName].push(newItem);
+                    if (type === 'announcement') {
+                        showDummyNotification('Pengumuman Baru!', updatedData.title);
+                    }
+                }
+                
+                showToast('Data berhasil disimpan.', 'success');
+                closeFormModal();
+                render();
+            };
+
+            formModal.style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        // --- HELPERS (Toast, Modals, etc.) ---
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function togglePassword(button) {
+            const input = button.previousElementSibling;
+            const icon = button.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+        
+        function openLoginModal() { 
+            loginError.classList.add('hidden');
+            loginModal.style.display = 'flex'; 
+        }
+        function closeLoginModal() { 
+            loginModal.style.display = 'none'; 
+        }
+        function closeFormModal() { 
+            formModal.style.display = 'none';
+            formModalContent.innerHTML = '';
+        }
+
+        // --- PUSH NOTIFICATION SIMULATION ---
+        function handleRequestNotificationPermission() {
+            if (!("Notification" in window)) {
+                showToast("Browser ini tidak mendukung notifikasi desktop.", "error");
+            } else if (Notification.permission === "granted") {
+                showToast("Notifikasi sudah aktif.", "success");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then((permission) => {
+                    state.notificationPermission = permission;
+                    if (permission === "granted") {
+                        showToast("Notifikasi berhasil diaktifkan!", "success");
+                        new Notification("Rohis Digital", { body: "Anda akan menerima pemberitahuan penting melalui notifikasi ini." });
+                    }
+                    render();
+                });
+            }
+        }
+
+        function showDummyNotification(title, body) {
+            if (state.notificationPermission === 'granted') {
+                new Notification(title, { body: body, icon: 'https://placehold.co/192x192/16a34a/FFFFFF?text=RD' });
+            }
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            render();
+
+            loginForm.addEventListener('submit', handleLogin);
+            closeLoginModalBtn.addEventListener('click', closeLoginModal);
+            loginModal.addEventListener('click', (e) => { if (e.target === loginModal) closeLoginModal(); });
+            formModal.addEventListener('click', (e) => { if (e.target === formModal) closeFormModal(); });
+        };
+    </script>
+</body>
+</html>
